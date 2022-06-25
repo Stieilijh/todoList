@@ -1,14 +1,10 @@
-export default class TodoList {
-  constructor(todoListName) {
-    this.todoListName = todoListName;
-    this.projects = [];
-  }
-  getName() {
-    return this.todoListName;
-  }
+import Project from "./Project";
 
-  setName(name) {
-    this.todoListName = name;
+export default class TodoList {
+  constructor() {
+    this.projects = [];
+    this.projects.push(new Project("Today"));
+    this.projects.push(new Project("This Week"));
   }
   getprojects() {
     return this.projects;
@@ -21,7 +17,7 @@ export default class TodoList {
   addproject(project) {
     this.projects.append(project);
   }
-  deleteprojects(projectToBeDeleted) {
+  deleteproject(projectToBeDeleted) {
     this.projects.filter(
       (project) => !(project.getName() == projectToBeDeleted.getName())
     );
