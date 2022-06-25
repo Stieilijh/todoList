@@ -15,14 +15,14 @@ export default class TodoList {
   }
 
   addproject(project) {
-    this.projects.append(project);
+    this.projects.push(project);
   }
-  deleteproject(projectToBeDeleted) {
-    this.projects.filter(
-      (project) => !(project.getName() == projectToBeDeleted.getName())
+  deleteproject(projectName) {
+    this.projects = this.projects.filter(
+      (project) => !(project.getName() === projectName)
     );
   }
-  isThere(project) {
-    this.projects.some((item) => item.getName() == project.getName());
+  isThere(projectName) {
+    return this.projects.some((item) => item.getName() === projectName);
   }
 }

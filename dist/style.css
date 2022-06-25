@@ -3,3 +3,16 @@
     font-size: 2em;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
+.projectList{
+    padding: 15px;
+    border: 1px solid black;
+}
+#mainPart{
+    display: flex;
+
+}
+#addProjectBtn{
+    padding: 15px;
+    font-weight: 700;
+    text-transform:uppercase ;
+}

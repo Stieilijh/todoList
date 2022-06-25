@@ -8,6 +8,7 @@ todoList.getprojects().forEach((element) => {
   const projectDiv = document.createElement("div");
   projectDiv.id = element.getName();
   projectDiv.textContent = element.getName();
+  projectDiv.classList = "projectList";
   projectsDiv.appendChild(projectDiv);
 });
 
