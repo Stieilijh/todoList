@@ -6,8 +6,14 @@ export default class TodoList {
     this.projects.push(new Project("Today"));
     this.projects.push(new Project("This Week"));
   }
-  getprojects() {
+  isEmpty() {
+    return this.projects.length == 0;
+  }
+  getProjects() {
     return this.projects;
+  }
+  getProject(name) {
+    return this.projects.find((project) => project.getName() == name);
   }
 
   setprojects(projects) {

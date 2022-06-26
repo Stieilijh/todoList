@@ -1,7 +1,10 @@
+import Task from "./Task";
+
 export default class Project {
   constructor(projectName) {
     this.tasks = [];
     this.projectName = projectName;
+    this.tasks.push(new Task("Some Task" + projectName));
   }
 
   getName() {
@@ -20,12 +23,12 @@ export default class Project {
   }
 
   addTask(task) {
-    this.tasks.append(task);
+    this.tasks.push(task);
   }
   deleteTasks(taskToBeDeleted) {
     this.tasks.filter((task) => !(task.getName() == taskToBeDeleted.getName()));
   }
-  isThere(task) {
-    this.tasks.some((item) => item.getName() == task.getName());
+  has(taskName) {
+    return this.tasks.some((item) => item.getName() == taskName);
   }
 }
