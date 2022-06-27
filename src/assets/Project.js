@@ -4,7 +4,7 @@ export default class Project {
   constructor(projectName) {
     this.tasks = [];
     this.projectName = projectName;
-    this.tasks.push(new Task("Some Task" + projectName));
+    this.tasks.push(new Task("Some Task in " + projectName));
   }
 
   getName() {
@@ -25,8 +25,10 @@ export default class Project {
   addTask(task) {
     this.tasks.push(task);
   }
-  deleteTasks(taskToBeDeleted) {
-    this.tasks.filter((task) => !(task.getName() == taskToBeDeleted.getName()));
+  deleteTask(taskToBeDeleted) {
+    this.tasks = this.tasks.filter(
+      (task) => !(task.getName() == taskToBeDeleted)
+    );
   }
   has(taskName) {
     return this.tasks.some((item) => item.getName() == taskName);

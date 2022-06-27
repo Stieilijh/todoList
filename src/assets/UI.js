@@ -29,6 +29,10 @@ export default function setupNavBar(todoList) {
 
   //add task button ActionListener
   document.querySelector("#addTaskBtn").addEventListener("click", () => {
+    if (todoList.isEmpty()) {
+      alert("Make a project first!!");
+      return;
+    }
     addTaskBtn.style.display = "none";
     document.querySelector("#addTaskFormDiv").style.display = "block";
   });
@@ -45,6 +49,9 @@ export default function setupNavBar(todoList) {
         MakeaddProjectFormInvisible();
         todoList.addproject(new Project(name));
         UpdateProjectNames(todoList);
+        currentProjectName = name;
+        UpdateProjectTasks(todoList);
+        storeList(todoList);
       }
     });
   //addTaskform submit
@@ -59,6 +66,7 @@ export default function setupNavBar(todoList) {
       MakeaddTaskFormInvisible();
       findCurrentProject(todoList).addTask(new Task(name, date));
       UpdateProjectTasks(todoList);
+      storeList(todoList);
     }
   });
 }
@@ -91,7 +99,16 @@ function UpdateProjectNames(todoList) {
     delBtn.classList = "cancelBtns";
     delBtn.addEventListener("click", () => {
       todoList.deleteproject(element.getName());
+      storeList(todoList);
       UpdateProjectNames(todoList);
+      if (!todoList.has(currentProjectName)) {
+        if (todoList.isEmpty()) {
+          document.querySelector("#tasks").innerHTML = "";
+        } else {
+          currentProjectName = todoList.getProjects()[0].getName();
+          UpdateProjectTasks(todoList);
+        }
+      }
     });
     projectDiv.appendChild(delBtn);
   });
@@ -115,9 +132,29 @@ function UpdateProjectTasks(todoList) {
     taskDiv.id = task.getName().slice(0, 4) + "div";
     taskText.id = task.getName().slice(0, 4);
     taskText.textContent = task.getName();
-    taskDiv.classList = "taskList";
-    tasksDiv.appendChild(taskDiv);
     taskDiv.appendChild(taskText);
+    taskDiv.classList = "taskList";
+    //styling
+    taskDiv.style.display = "flex";
+    taskDiv.style.gap = "5%";
+    taskDiv.style.alignItems = "center";
+    //due date
+    const dateP = document.createElement("p");
+    dateP.id = task.getName().slice(0, 4) + "p";
+    dateP.textContent = task.getDate();
+    taskDiv.appendChild(dateP);
+    //del button
+    const delBtn = document.createElement("button");
+    delBtn.id = task.getName().slice(0, 4) + "DelBtn";
+    delBtn.textContent = "x";
+    delBtn.classList = "cancelBtns";
+    delBtn.addEventListener("click", () => {
+      currentProject.deleteTask(task.getName());
+      storeList(todoList);
+      UpdateProjectTasks(todoList);
+    });
+    taskDiv.appendChild(delBtn);
+    tasksDiv.appendChild(taskDiv);
   });
 }
 
@@ -131,4 +168,8 @@ function findCurrentProject(todoList) {
     return false;
   }
   return todoList.getProject(currentProjectName);
+}
+
+function storeList(todoList) {
+  localStorage.setItem("todolist", JSON.stringify(todoList));
 }
