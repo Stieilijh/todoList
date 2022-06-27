@@ -58,15 +58,19 @@ export default function setupNavBar(todoList) {
   document.querySelector("#createNewTaskBtn").addEventListener("click", () => {
     const name = document.querySelector("#addTaskNameInput").value;
     const date = document.querySelector("#addDueDateInput").value;
+    const priority = document.querySelector("#addPriorityInput").value;
     if (findCurrentProject(todoList).has(name)) {
       alert("Task already exists");
     } else if (name === "") {
       alert("Task can't be empty");
     } else {
       MakeaddTaskFormInvisible();
-      findCurrentProject(todoList).addTask(new Task(name, date));
+      findCurrentProject(todoList).addTask(
+        new Task(name, date, parseInt(priority))
+      );
       UpdateProjectTasks(todoList);
       storeList(todoList);
+      initializeMainProjects(todoList);
     }
   });
 }
@@ -74,18 +78,18 @@ export default function setupNavBar(todoList) {
 function UpdateProjectNames(todoList) {
   const projectsDiv = document.querySelector("#projects");
   projectsDiv.innerHTML = "";
-  todoList.getProjects().forEach((element) => {
+  todoList.getProjects().forEach((project) => {
     const projectDiv = document.createElement("div");
     const projectText = document.createElement("p");
-    projectDiv.id = element.getName() + "div";
-    projectText.id = element.getName();
-    projectText.textContent = element.getName();
+    projectDiv.id = project.getName() + "div";
+    projectText.id = project.getName();
+    projectText.textContent = project.getName();
     projectDiv.appendChild(projectText);
     projectDiv.classList = "projectList";
     projectsDiv.appendChild(projectDiv);
     //changing projects
     projectText.addEventListener("click", () => {
-      currentProjectName = element.getName();
+      currentProjectName = project.getName();
       UpdateProjectTasks(todoList);
     });
     //styling the new project
@@ -93,24 +97,29 @@ function UpdateProjectNames(todoList) {
     projectDiv.style.justifyContent = "space-around";
     projectDiv.style.alignItems = "center";
     //delete project btn
-    const delBtn = document.createElement("button");
-    delBtn.id = element.getName() + "DelBtn";
-    delBtn.textContent = "x";
-    delBtn.classList = "cancelBtns";
-    delBtn.addEventListener("click", () => {
-      todoList.deleteproject(element.getName());
-      storeList(todoList);
-      UpdateProjectNames(todoList);
-      if (!todoList.has(currentProjectName)) {
-        if (todoList.isEmpty()) {
-          document.querySelector("#tasks").innerHTML = "";
-        } else {
-          currentProjectName = todoList.getProjects()[0].getName();
-          UpdateProjectTasks(todoList);
+    if (!(project.getName() == "Today" || project.getName() == "This Week")) {
+      const delBtn = document.createElement("button");
+      delBtn.id = project.getName() + "DelBtn";
+      delBtn.textContent = "x";
+      delBtn.classList = "cancelBtns";
+      delBtn.addEventListener("click", () => {
+        todoList.deleteproject(project.getName());
+        storeList(todoList);
+        UpdateProjectNames(todoList);
+        initializeMainProjects(todoList);
+        if (!todoList.has(currentProjectName)) {
+          if (todoList.isEmpty()) {
+            document.querySelector("#tasks").innerHTML = "";
+          } else {
+            currentProjectName = todoList.getProjects()[0].getName();
+            UpdateProjectTasks(todoList);
+          }
         }
-      }
-    });
-    projectDiv.appendChild(delBtn);
+      });
+      projectDiv.appendChild(delBtn);
+    }
+    //adds tasks from all other projects to today and this week
+    initializeMainProjects(todoList);
   });
 }
 function MakeaddProjectFormInvisible() {
@@ -136,13 +145,19 @@ function UpdateProjectTasks(todoList) {
     taskDiv.classList = "taskList";
     //styling
     taskDiv.style.display = "flex";
+    taskDiv.style.backgroundColor = task.getBackgroundColor(task.getPriority());
     taskDiv.style.gap = "5%";
     taskDiv.style.alignItems = "center";
     //due date
     const dateP = document.createElement("p");
-    dateP.id = task.getName().slice(0, 4) + "p";
-    dateP.textContent = task.getDate();
+    dateP.id = task.getName().slice(0, 4) + "date";
+    dateP.textContent = task.getFormattedDate();
     taskDiv.appendChild(dateP);
+    //task priority
+    const priority = document.createElement("p");
+    priority.id = task.getName().slice(0, 4) + "priority";
+    priority.textContent = task.getPriority();
+    taskDiv.appendChild(priority);
     //del button
     const delBtn = document.createElement("button");
     delBtn.id = task.getName().slice(0, 4) + "DelBtn";
@@ -173,3 +188,29 @@ function findCurrentProject(todoList) {
 function storeList(todoList) {
   localStorage.setItem("todolist", JSON.stringify(todoList));
 }
+
+//adds tasks from all other projects to today and this week
+function initializeMainProjects(todoList) {
+  todoList.getProjects().forEach((project) => {
+    if (!(project.getName() == "Today" || project.getName() == "This Week")) {
+      project.getTasks().forEach((task) => {
+        if (
+          isToday(task.getDate()) &&
+          !todoList.getProject("Today").has(task.getName())
+        ) {
+          todoList.getProject("Today").addTask(task);
+        }
+      });
+    }
+  });
+}
+
+const isToday = (someDate) => {
+  const today = new Date();
+  someDate = new Date(someDate);
+  return (
+    someDate.getDate() == today.getDate() &&
+    someDate.getMonth() == today.getMonth() &&
+    someDate.getFullYear() == today.getFullYear()
+  );
+};

@@ -3,7 +3,7 @@ import TodoList from "./assets/Todolist";
 import Project from "./assets/Project";
 import setupUI from "./assets/UI";
 let todoList;
-
+localStorage.clear();
 if (!localStorage.getItem("todolist")) {
   todoList = new TodoList();
 } else {

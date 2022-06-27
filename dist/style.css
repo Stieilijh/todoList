@@ -19,14 +19,14 @@
     font-weight: 700;
     text-transform:uppercase ;
 }
-#createNewProjectBtn{
+#createNewProjectBtn,#createNewTaskBtn{
     color: white;
     background-color: green;
 }
 .cancelBtns{
-    color: snow;
+    color: white;
+    border: 1px solid white;
     background-color: red;
-    border: none;
 }
 #cancelNewProject,#createNewProjectBtn{
     padding: 4% 10%;

@@ -27,8 +27,12 @@
     </div>
     <div id="addTask"> 
         <div id="addTaskFormDiv">
+            <label for="taskName">Task Name</label>
                 <input type="text" id="addTaskNameInput" placeholder="Task Name">
-                <input type="date" id="addDueDateInput" placeholder="Due Date">
+                <label for="dueDate">Due Date</label>
+                <input type="date" id="addDueDateInput">
+                <label for="priority">Priority</label>
+                <input type="number" id="addPriorityInput" max="3" min="1">
                 <div id="taskBtns"><button id="createNewTaskBtn">+</button>
                 <button id="cancelNewTask" class="cancelBtns">x</button></div>
         </div>
